@@ -1,0 +1,52 @@
+---
+title: "V01108247_ClusterAnalysis_Survey_A4B"
+author: "N V Satyanarayan"
+date: "2024-07-08"
+output: html_document
+---
+
+```{r}
+# Function to auto-install and load packages
+install_and_load <- function(packages) {
+  for (package in packages) {
+    if (!require(package, character.only = TRUE)) {
+      install.packages(package, dependencies = TRUE)
+    }
+    library(package, character.only = TRUE)
+  }
+}
+
+```
+
+
+```{r}
+# List of packages to install and load
+packages <- c("cluster", "FactoMineR", "factoextra", "pheatmap")
+
+install_and_load(packages)
+survey_df<-read.csv('C:\\Users\\SPURGE\\Desktop\\SCMA\\A4\\Survey.csv',header=TRUE)
+sur_int=survey_df[,20:46] 
+```
+
+```{r}
+library(cluster) 
+library(factoextra) 
+show(sur_int) 
+fviz_nbclust(sur_int,kmeans,method = "gap_stat")
+```
+```{r}
+set.seed(123) 
+km.res<-kmeans(sur_int,4,nstart = 25) 
+fviz_cluster(km.res,data=sur_int,palette="jco", 
+             ggtheme = theme_minimal()) 
+```
+
+```{r}
+res.hc <- hclust(dist(sur_int), method = "ward.D2") 
+fviz_dend(res.hc,cex=0.5,k=4,palette = "jco")
+```
+
+```{r}
+library(pheatmap) 
+pheatmap(t(sur_int),cutree_cols = 4) 
+```

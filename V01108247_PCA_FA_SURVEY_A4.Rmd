@@ -1,0 +1,112 @@
+---
+title: "V01108247_PCA_FA_Survey"
+author: "N V Satyanarayan"
+date: "2024-07-08"
+output: html_document
+---
+
+```{r}
+install_and_load <- function(packages) {
+  for (package in packages) {
+    if (!require(package, character.only = TRUE)) {
+      install.packages(package, dependencies = TRUE)
+    }
+    library(package, character.only = TRUE)
+  }
+}
+
+```
+
+```{r}
+# List of packages to install and load
+packages <- c("dplyr", "psych", "tidyr", "GPArotation", "FactoMineR", "factoextra", "pheatmap")
+
+# Call the function
+install_and_load(packages)
+```
+
+
+```{r}
+survey_df<-read.csv('C:\\Users\\SPURGE\\Desktop\\SCMA\\A4\\Survey.csv',header=TRUE) 
+```
+
+
+```{r}
+# Check the dimensions, names, and structure of the data
+dim(survey_df) 
+names(survey_df) 
+head(survey_df) 
+str(survey_df)
+```
+
+
+```{r}
+#A)Do principal component analysis and factor analysis and identify the dimensions in the data. 
+is.na(survey_df) 
+```
+
+```{r}
+# Check for missing values
+sum(is.na(survey_df)) 
+```
+
+```{r}
+# Subset the relevant columns for analysis (assuming columns 20 to 46 are relevant)
+sur_int=survey_df[,20:46] 
+```
+
+
+```{r}
+# Verify the structure and dimensions of the subset data
+str(sur_int) 
+dim(sur_int) 
+library(GPArotation) 
+```
+
+```{r}
+# Perform Principal Component Analysis (PCA)
+pca <- principal(sur_int,5,n.obs =162, rotate ="promax") 
+pca 
+```
+
+
+```{r}
+# Perform Factor Analysis using the omega function from the psych package
+om.h<-omega(sur_int,n.obs=162,sl=FALSE) 
+op<-par(mfrow=c(1,1)) 
+om<-omega(sur_int,n.obs=162) 
+library(FactoMineR)
+```
+
+```{r}
+# Perform PCA using the FactoMineR package
+pca<-PCA(sur_int,scale.unit = TRUE) 
+summary(pca)
+```
+
+```{r}
+# Create a biplot for visualization
+install.packages("FactoMineR")
+library(FactoMineR)
+# Create a biplot for visualization using the factoextra package
+fviz_pca_biplot(pca) 
+```
+
+```{r}
+# Display the structure and dimensions of the subset data again for verification
+str(sur_int) 
+dim(sur_int) 
+show(sur_int) 
+```
+
+```{r}
+#Factor Analysis 
+
+factor_analysis<-fa(sur_int,nfactors = 4,rotate = "varimax") 
+names(factor_analysis) 
+print(factor_analysis$loadings,reorder=TRUE) 
+fa.diagram(factor_analysis) 
+print(factor_analysis$communality) 
+print(factor_analysis$scores) 
+```
+
